@@ -8,7 +8,7 @@ function Navbar() {
   const { showSearch, setShowSearch } = useContext(ShopContext);
   return (
     <div className="flex items-center justify-between py-5 font-medium">
-      <Link to={"/"}>
+      <Link to={"/home"}>
         <img src={assets.LOGO} className="w-42" alt="" />
       </Link>
 
