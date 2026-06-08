@@ -1,14 +1,65 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 function Login() {
   const [login, setlogin] = useState(true);
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [confirmpassword, setconfirmpassword] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [error, seterror] = useState(null);
+
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/home");
-    // TODO:
-    // Connect the backend and the database
+    seterror(null);
+
+    if (!login) {
+      // --- SIGN UP ---
+      if (password !== confirmpassword) {
+        seterror("Passwords do not match");
+        return; // Stops the function here
+      }
+
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const response = await axios.post("http://localhost:8000/create_user", {
+          name,
+          email,
+          password,
+        });
+        navigate("/home");
+      } catch (err) {
+        // Correctly extract the error text from the backend
+        if (err.response && err.response.data && err.response.data.detail) {
+          seterror(err.response.data.detail);
+        } else {
+          seterror("Network error. Is the backend running?");
+        }
+      }
+    } else {
+      // --- LOGIN ---
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/user/info/${email}`,
+        );
+
+        // Assuming your backend returns 200 OK for a found user
+        if (response.status === 200 || response.status === 202) {
+          navigate("/home");
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          seterror("User not found.");
+        } else {
+          seterror("Network error. Is the backend running?");
+        }
+      }
+    }
   };
+
   return (
     <div className="w-100 mx-auto border-1 rounded-sm p-5">
       <div className="relative flex border rounded-full overflow-hidden">
@@ -44,12 +95,16 @@ function Login() {
               className="border-b-1 p-1"
               required
               type="email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
             />
             <input
               placeholder="Password"
               className="border-b-1 p-1"
               required
               type="password"
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
             />
             <button className="border-1 p-2 w-[70%] m-auto mt-2 rounded-2xl text-xl hover:bg-[#000] hover:text-white cursor-pointer">
               Submit
@@ -67,24 +122,32 @@ function Login() {
               className="border-b-1 p-1"
               required
               type="text"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
             />
             <input
               placeholder="Email"
               className="border-b-1 p-1"
               required
               type="email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
             />
             <input
               placeholder="Password"
               className="border-b-1 p-1"
               required
               type="password"
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
             />
             <input
               placeholder="Confirm password"
               className="border-b-1 p-1"
               required
               type="password"
+              value={confirmpassword}
+              onChange={(e) => setconfirmpassword(e.target.value)}
             />
             <button className="border-1 p-2 w-[70%] m-auto mt-2 rounded-2xl text-xl hover:bg-[#000] hover:text-white cursor-pointer">
               Submit
