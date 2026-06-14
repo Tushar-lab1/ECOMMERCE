@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProduct from "../components/RelatedProduct";
+import axios from "axios";
 function Product() {
   const { productId } = useParams();
   const { products, currency } = useContext(ShopContext);
@@ -15,14 +16,33 @@ function Product() {
       if (item._id === productId) {
         setProductData(item);
         setImage(item.image[0]);
-        console.log(item);
         return null;
       }
     });
   };
   useEffect(() => {
     fetchProductData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, productId]);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    if (size === "") {
+      alert("Select Size");
+      return;
+    }
+    try {
+      const response = await axios.post(`http://localhost:8000/add_product`, {
+        email: "callsignspin@gmail.com",
+        product_id: productData._id,
+        amount: productData.price,
+        size: size,
+      });
+      console.log(response);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
 
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
@@ -82,7 +102,10 @@ function Product() {
               ))}
             </div>
           </div>
-          <button className="cursor-pointer bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
+          <button
+            className="cursor-pointer bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
+            onClick={(e) => handleAddToCart(e)}
+          >
             ADD TO CART
           </button>
           <hr className="mt-8 sm:w-4/5"></hr>
@@ -106,13 +129,19 @@ function Product() {
             perspiciatis recusandae sequi ad accusamus quaerat odio adipisci,
             temporibus ullam, fugit porro deleniti.
           </p>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatum culpa voluptas doloribus pariatur voluptatem quia incidunt corporis repellat accusantium beatae aliquam, commodi dolorem facilis recusandae, similique aliquid? Necessitatibus, est quod?</p>
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatum
+            culpa voluptas doloribus pariatur voluptatem quia incidunt corporis
+            repellat accusantium beatae aliquam, commodi dolorem facilis
+            recusandae, similique aliquid? Necessitatibus, est quod?
+          </p>
         </div>
       </div>
 
-
-      <RelatedProduct category={productData.category} subcategory={productData.subCategory} />
-
+      <RelatedProduct
+        category={productData.category}
+        subcategory={productData.subCategory}
+      />
     </div>
   ) : (
     <></>
