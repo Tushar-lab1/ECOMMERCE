@@ -1,7 +1,12 @@
 from jose import JWTError , jwt
 from datetime import datetime , timedelta , timezone
+from ..schemas import token_schema
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends , HTTPException
 SECRET_KEY = "nfgjnwkjfioerjoivmslkmlvkosnokdsmc"
 ALGORITHM = "HS256"
+
+oauth2scheme = OAuth2PasswordBearer(tokenUrl="signin")
 
 def create_access_token(data : dict):
     to_encode = data.copy()
@@ -9,3 +14,24 @@ def create_access_token(data : dict):
     to_encode.update({"exp" : expire})
     encoded_jwt = jwt.encode(to_encode , SECRET_KEY , algorithm=ALGORITHM)
     return encoded_jwt
+
+def verify_token(token : str , credentials_exception):
+    try:
+        payload = jwt.decode(token , SECRET_KEY , algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = token_schema.TokenData(email = email)
+        return token_data
+    except JWTError:
+        raise credentials_exception
+
+def get_current_user(data: str = Depends(oauth2scheme)):
+
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    return verify_token(data, credentials_exception)

@@ -9,8 +9,7 @@ function Cart() {
       const response = await axios.get(
         `http://localhost:8000/cart/products/${email}`,
       );
-      console.log(response.data);
-      setCartItems(response.data);
+      setCartItems(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.log(err.response.data);
     }
@@ -21,32 +20,40 @@ function Cart() {
   }, []);
 
   return (
-    <div className="flex flex-col , gap-5">
-      {cartItems.map((item) => (
-        <Card
-          key={item.id}
-          product_id={item.product_id}
-          size={item.size}
-          amount={item.amount}
-        />
-      ))}
+    <div className="flex flex-col gap-5">
+      {cartItems.length === 0 ? (
+        <h1>Your Cart is empty</h1>
+      ) : (
+        cartItems.map((item) => (
+          <Card
+            key={item.id}
+            product_id={item.product_id}
+            size={item.size}
+            amount={item.amount}
+            refreshCart={get_all_products}
+          />
+        ))
+      )}
     </div>
   );
 }
 
-function Card({ product_id, size, amount }) {
+function Card({ product_id, size, amount, refreshCart }) {
   const { products } = useContext(ShopContext);
   const product = products.find((item) => item._id === product_id);
   const deleteItem = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8000/remove_product`, {
-        email: "callsignspin@gmail.com",
-        product_id: product_id,
-        amount: amount,
-        size: size,
+      // eslint-disable-next-line no-unused-vars
+      const response = await axios.delete(`http://localhost:8000/cart/remove`, {
+        data: {
+          email: "callsignspin@gmail.com",
+          product_id: product_id,
+          amount: amount,
+          size: size,
+        },
       });
-      console.log(response);
+      await refreshCart();
     } catch (err) {
       console.log(err.response.data);
     }
@@ -54,7 +61,11 @@ function Card({ product_id, size, amount }) {
   if (!product) return <h1>Your Cart is empty</h1>;
   return (
     <div className="border-1 flex gap-4 rounded-2xl">
-      <img src={product.image[0]} alt={product.name} className="w-[20%] rounded-2xl mr-10" />
+      <img
+        src={product.image[0]}
+        alt={product.name}
+        className="w-[20%] rounded-2xl mr-10"
+      />
       <div className="p-5">
         <h2 className="text-2xl font-blod my-2">{product.name}</h2>
         <h3 className="text-[15px]">{product.description}</h3>

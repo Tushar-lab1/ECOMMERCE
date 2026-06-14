@@ -25,38 +25,40 @@ function Login() {
 
       try {
         // eslint-disable-next-line no-unused-vars
-        const response = await axios.post(
-          "http://localhost:8000/user/create_user",
-          {
-            name,
-            email,
-            password,
-          },
-        );
+        const response = await axios.post("http://localhost:8000/user/", {
+          name,
+          email,
+          password,
+        });
+        const loginResponse = await axios.post("http://localhost:8000/signin", {
+          email,
+          password,
+        });
+        localStorage.setItem("access_token", loginResponse.data.access_token);
         navigate("/home");
       } catch (err) {
         // Correctly extract the error text from the backend
         if (err.response && err.response.data && err.response.data.detail) {
           seterror(err.response.data.detail);
         } else {
-          seterror("Network error. Is the backend running?");
+          seterror(err.response?.data?.detail || "Signup failed");
         }
       }
     } else {
       // --- LOGIN ---
       try {
-        const response = await axios.get(`http://localhost:8000/user/${email}`);
+        const response = await axios.post("http://localhost:8000/signin", {
+          email,
+          password,
+        });
 
-        // Assuming your backend returns 200 OK for a found user
-        if (response.status === 200 || response.status === 202) {
-          navigate("/home");
-        }
+        const token = response.data.access_token;
+
+        localStorage.setItem("access_token", token);
+
+        navigate("/home");
       } catch (err) {
-        if (err.response && err.response.status === 404) {
-          seterror("User not found.");
-        } else {
-          seterror("Network error. Is the backend running?");
-        }
+        seterror(err.response?.data?.detail || "Login failed");
       }
     }
   };
