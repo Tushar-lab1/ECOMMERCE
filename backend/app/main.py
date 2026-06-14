@@ -3,12 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database import engine
 from .models import user_model , product_model
-from .routers import product , user
-# from app.routers.auth import router as auth_router
+from .routers import product , user , auth
 
 app = FastAPI()
 app.include_router(product.router)
 app.include_router(user.router)
+app.include_router(auth.router)
+
 user_model.Base.metadata.create_all(engine)
 product_model.Base.metadata.create_all(engine)
 

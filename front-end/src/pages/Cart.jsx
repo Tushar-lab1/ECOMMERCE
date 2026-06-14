@@ -7,7 +7,7 @@ function Cart() {
   const get_all_products = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/get_products/${email}`,
+        `http://localhost:8000/cart/products/${email}`,
       );
       console.log(response.data);
       setCartItems(response.data);
@@ -53,9 +53,9 @@ function Card({ product_id, size, amount }) {
   };
   if (!product) return <h1>Your Cart is empty</h1>;
   return (
-    <div className="border-1 flex gap-4">
-      <img src={product.image[0]} alt={product.name} className="w-[25%]" />
-      <div>
+    <div className="border-1 flex gap-4 rounded-2xl">
+      <img src={product.image[0]} alt={product.name} className="w-[20%] rounded-2xl mr-10" />
+      <div className="p-5">
         <h2 className="text-2xl font-blod my-2">{product.name}</h2>
         <h3 className="text-[15px]">{product.description}</h3>
         <p>₹ {amount}</p>

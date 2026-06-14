@@ -25,11 +25,14 @@ function Login() {
 
       try {
         // eslint-disable-next-line no-unused-vars
-        const response = await axios.post("http://localhost:8000/create_user", {
-          name,
-          email,
-          password,
-        });
+        const response = await axios.post(
+          "http://localhost:8000/user/create_user",
+          {
+            name,
+            email,
+            password,
+          },
+        );
         navigate("/home");
       } catch (err) {
         // Correctly extract the error text from the backend
@@ -42,9 +45,7 @@ function Login() {
     } else {
       // --- LOGIN ---
       try {
-        const response = await axios.get(
-          `http://localhost:8000/user/info/${email}`,
-        );
+        const response = await axios.get(`http://localhost:8000/user/${email}`);
 
         // Assuming your backend returns 200 OK for a found user
         if (response.status === 200 || response.status === 202) {

@@ -32,13 +32,13 @@ function Product() {
       return;
     }
     try {
-      const response = await axios.post(`http://localhost:8000/add_product`, {
+      const response = await axios.post(`http://localhost:8000/cart`, {
         email: "callsignspin@gmail.com",
         product_id: productData._id,
         amount: productData.price,
         size: size,
       });
-      console.log(response);
+      alert("Product Added")
     } catch (err) {
       console.log(err.response.data);
     }

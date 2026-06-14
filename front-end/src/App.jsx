@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Collection from "./pages/Collection";
 import About from "./pages/About";
 import Cart from "./pages/Cart";
-import Contact from "./pages/Cart";
+import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Orders from "./pages/Orders";
 import PlaceOrder from "./pages/PlaceOrder";
@@ -24,7 +24,6 @@ function App() {
         <Route path="/collection" element={<Collection />} />
         <Route path="/about" element={<About />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/placeOrders" element={<PlaceOrder />} />
