@@ -32,14 +32,15 @@ function Product() {
       return;
     }
     try {
+      const email = localStorage.getItem("email");
       // eslint-disable-next-line no-unused-vars
       const response = await axios.post(`http://localhost:8000/cart`, {
-        email: "callsignspin@gmail.com",
+        email: email,
         product_id: productData._id,
         amount: productData.price,
         size: size,
       });
-      alert("Product Added")
+      alert("Product Added");
     } catch (err) {
       console.log(err.response.data);
     }

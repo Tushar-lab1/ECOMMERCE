@@ -3,9 +3,9 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
-  const email = "callsignspin@gmail.com";
   const get_all_products = async () => {
     try {
+      const email = localStorage.getItem("email")
       const response = await axios.get(
         `http://localhost:8000/cart/products/${email}`,
       );

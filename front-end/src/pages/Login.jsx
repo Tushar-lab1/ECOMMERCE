@@ -35,6 +35,7 @@ function Login() {
           password,
         });
         localStorage.setItem("access_token", loginResponse.data.access_token);
+        localStorage.setItem("email" , email)
         navigate("/home");
       } catch (err) {
         // Correctly extract the error text from the backend
@@ -51,7 +52,7 @@ function Login() {
           email,
           password,
         });
-
+        localStorage.setItem("email" , email)
         const token = response.data.access_token;
 
         localStorage.setItem("access_token", token);
