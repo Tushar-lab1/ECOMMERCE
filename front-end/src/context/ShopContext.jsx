@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { createContext, useState } from "react";
-import { products } from "../assets/assets";
+import axios from "axios";
 
 export const ShopContext = createContext();
 
@@ -9,6 +10,20 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(true);
   const [noItem, setNoItem] = useState(0);
+  const [products, setProducts] = useState([]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/items");
+      setProducts(response.data);
+      // console.log(response.data);
+    } catch (error) {
+      console.log(console.log(error.response.data));
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const value = {
     products,

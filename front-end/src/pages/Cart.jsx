@@ -42,7 +42,9 @@ function Cart() {
 
 function Card({ product_id, size, amount, refreshCart }) {
   const { products, setNoItem } = useContext(ShopContext);
-  const product = products.find((item) => item._id === product_id);
+  const product = products.find(
+    (item) => String(item.id) === String(product_id),
+  );
   const deleteItem = async (e) => {
     e.preventDefault();
     try {
@@ -66,7 +68,7 @@ function Card({ product_id, size, amount, refreshCart }) {
   return (
     <div className="border-1 flex gap-4 rounded-2xl">
       <img
-        src={product.image[0]}
+        src={`http://localhost:8000${product.images[0]}`}
         alt={product.name}
         className="w-[20%] rounded-2xl mr-10"
       />

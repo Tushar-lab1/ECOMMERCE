@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import ProductItem from "./ProductItem";
 
-function RelatedProduct({category, subcategory}) {
+function RelatedProduct({ category, subcategory }) {
   const { products } = useContext(ShopContext);
 
   const [related, setrelated] = useState([]);
@@ -11,11 +11,11 @@ function RelatedProduct({category, subcategory}) {
   useEffect(() => {
     if (products.length > 0) {
       let productsCopy = products.slice();
-      
+
       productsCopy = productsCopy.filter((item) => category === item.category);
 
       productsCopy = productsCopy.filter(
-        (item) => subcategory === item.subCategory
+        (item) => subcategory === item.sub_category,
       );
       setrelated(productsCopy.slice(0, 5));
     }
@@ -30,10 +30,10 @@ function RelatedProduct({category, subcategory}) {
         {related.map((item, index) => (
           <ProductItem
             key={index}
-            id={item._id}
+            id={item.id}
             name={item.name}
             price={item.price}
-            image={item.image}
+            image={item.images}
           />
         ))}
       </div>

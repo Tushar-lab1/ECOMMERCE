@@ -12,14 +12,12 @@ function Product() {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
 
-  const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]);
-        return null;
-      }
-    });
+  const fetchProductData = () => {
+    const item = products.find((item) => String(item.id) === String(productId));
+    if (item) {
+      setProductData(item);
+      setImage(item.images[0]);
+    }
   };
   useEffect(() => {
     fetchProductData();
@@ -34,10 +32,11 @@ function Product() {
     }
     try {
       const email = localStorage.getItem("email");
+      console.log(email, productData.id, productData.price, size);
       // eslint-disable-next-line no-unused-vars
       const response = await axios.post(`http://localhost:8000/cart`, {
         email: email,
-        product_id: productData._id,
+        product_id: String(productData.id),
         amount: productData.price,
         size: size,
       });
@@ -53,9 +52,9 @@ function Product() {
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[19%] w-full">
-            {productData.image.map((item, index) => (
+            {productData.images.map((item, index) => (
               <img
-                src={item}
+                src={`http://localhost:8000${item}`}
                 alt=""
                 key={index}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
@@ -71,7 +70,11 @@ function Product() {
           </div> */}
 
           <div className="w-full sm:w-[80%]">
-            <img src={image} alt="" className="w-full h-auto" />
+            <img
+              src={`http://localhost:8000${image}`}
+              alt=""
+              className="w-full h-auto"
+            />
           </div>
         </div>
         {/*PRODUCT INFO */}
@@ -144,7 +147,7 @@ function Product() {
 
       <RelatedProduct
         category={productData.category}
-        subcategory={productData.subCategory}
+        subcategory={productData.sub_category}
       />
     </div>
   ) : (

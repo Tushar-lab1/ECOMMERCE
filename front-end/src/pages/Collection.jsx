@@ -15,7 +15,7 @@ function Collection() {
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
       setCategory((category) =>
-        category.filter((item) => item !== e.target.value)
+        category.filter((item) => item !== e.target.value),
       );
     } else {
       setCategory((category) => [...category, e.target.value]);
@@ -26,7 +26,7 @@ function Collection() {
   const toggleSubCategory = (e) => {
     if (subCategory.includes(e.target.value)) {
       setSubCategory((subCategory) =>
-        subCategory.filter((item) => item !== e.target.value)
+        subCategory.filter((item) => item !== e.target.value),
       );
     } else {
       setSubCategory((subCategory) => [...subCategory, e.target.value]);
@@ -37,12 +37,12 @@ function Collection() {
     let productsCopy = products.slice();
     if (category.length > 0) {
       productsCopy = productsCopy.filter((item) =>
-        category.includes(item.category)
+        category.includes(item.category),
       );
     }
     if (subCategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
-        subCategory.includes(item.subCategory)
+        subCategory.includes(item.sub_category),
       );
     }
     if (sortOrder === "low-high") {
@@ -53,7 +53,7 @@ function Collection() {
 
     if (showSearch && search) {
       productsCopy = productsCopy.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
+        item.name.toLowerCase().includes(search.toLowerCase()),
       );
       console.log(search);
     }
@@ -62,7 +62,7 @@ function Collection() {
 
   useEffect(() => {
     handlingFilter();
-  }, [category, subCategory, sortOrder, search, showSearch]);
+  }, [products, category, subCategory, sortOrder, search, showSearch]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -171,10 +171,10 @@ function Collection() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
           {filterProducts.map((item, index) => (
             <ProductItem
-              key={index}
+              key={item.id}
               name={item.name}
-              id={item._id}
-              image={item.image}
+              id={item.id}
+              image={item.images}
               price={item.price}
             />
           ))}
