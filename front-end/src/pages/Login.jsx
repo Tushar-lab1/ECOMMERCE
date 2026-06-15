@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ShopContext } from "../context/ShopContext";
 function Login() {
   const [login, setlogin] = useState(true);
   const [name, setname] = useState("");
@@ -9,6 +10,7 @@ function Login() {
   const [confirmpassword, setconfirmpassword] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [error, seterror] = useState(null);
+  const { setNoItem } = useContext(ShopContext);
 
   const navigate = useNavigate();
 
@@ -35,7 +37,12 @@ function Login() {
           password,
         });
         localStorage.setItem("access_token", loginResponse.data.access_token);
-        localStorage.setItem("email" , email)
+        localStorage.setItem("email", email);
+        const email = localStorage.getItem("email");
+        const cartresponse = await axios.get(
+          `http://localhost:8000/cart/products/${email}`,
+        );
+        setNoItem(cartresponse.data.length);
         navigate("/home");
       } catch (err) {
         // Correctly extract the error text from the backend
@@ -52,7 +59,7 @@ function Login() {
           email,
           password,
         });
-        localStorage.setItem("email" , email)
+        localStorage.setItem("email", email);
         const token = response.data.access_token;
 
         localStorage.setItem("access_token", token);

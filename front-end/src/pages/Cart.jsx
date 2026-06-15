@@ -3,13 +3,15 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
+  const { setNoItem } = useContext(ShopContext);
   const get_all_products = async () => {
     try {
-      const email = localStorage.getItem("email")
+      const email = localStorage.getItem("email");
       const response = await axios.get(
         `http://localhost:8000/cart/products/${email}`,
       );
       setCartItems(Array.isArray(response.data) ? response.data : []);
+      setNoItem(response.data.length);
     } catch (err) {
       console.log(err.response.data);
     }
@@ -39,20 +41,22 @@ function Cart() {
 }
 
 function Card({ product_id, size, amount, refreshCart }) {
-  const { products } = useContext(ShopContext);
+  const { products, setNoItem } = useContext(ShopContext);
   const product = products.find((item) => item._id === product_id);
   const deleteItem = async (e) => {
     e.preventDefault();
     try {
+      const email = localStorage.getItem("email");
       // eslint-disable-next-line no-unused-vars
       const response = await axios.delete(`http://localhost:8000/cart/remove`, {
         data: {
-          email: "callsignspin@gmail.com",
+          email: email,
           product_id: product_id,
           amount: amount,
           size: size,
         },
       });
+      setNoItem((prev) => prev - 1);
       await refreshCart();
     } catch (err) {
       console.log(err.response.data);
@@ -75,9 +79,9 @@ function Card({ product_id, size, amount, refreshCart }) {
           Buy Now
         </button>
         <ul className="flex gap-5 text-[#666] cursor-pointer">
-          <li onClick={(e) => deleteItem(e)}>delete</li>
-          <li>share</li>
-          <li>see more like this</li>
+          <li onClick={(e) => deleteItem(e)}>Delete</li>
+          <li>Share</li>
+          <li>See more like this</li>
         </ul>
       </div>
     </div>

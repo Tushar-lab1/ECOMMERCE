@@ -7,6 +7,7 @@ import axios from "axios";
 function Product() {
   const { productId } = useParams();
   const { products, currency } = useContext(ShopContext);
+  const { setNoItem } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -41,6 +42,7 @@ function Product() {
         size: size,
       });
       alert("Product Added");
+      setNoItem((prev) => prev + 1);
     } catch (err) {
       console.log(err.response.data);
     }
